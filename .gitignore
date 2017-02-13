@@ -1,0 +1,21 @@
+#cudd library
+cudd-3.0.0/
+
+#testfile
+*.part
+*.dfa
+
+#codeblocks
+*.cbp
+*.depend
+*.layout
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+bdd
+bdd2
