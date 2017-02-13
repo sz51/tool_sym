@@ -89,26 +89,39 @@ bool syn::realizablity(){
         W.push_back(tmp);
         cur++;
         //dumpdot(W[cur], "W"+to_string(cur));
-        if(fixpoint()){
-            BDD O = mgr.bddOne();
-            vector<BDD> S2O;
-            for(int i = 0; i < bdd.output.size(); i++){
-                //cout<<bdd.output[i]<<endl;
-                O *= bdd.bddvars[bdd.output[i]];
-            }
-            O *= bdd.bddvars[bdd.nbits];
-            //dumpdot(O, "outcube");
-            W[cur].SolveEqn(O, S2O, outindex(), bdd.output.size()+1);
-
+        if(fixpoint())
             break;
-        }
         Wprime.push_back(existsyn());
         //assert(cur = (W.size() - 1));
     }
-    if((W[cur].Eval(state2bit(bdd.init))).IsOne())
+    if((W[cur].Eval(state2bit(bdd.init))).IsOne()){
+        BDD O = mgr.bddOne();
+        vector<BDD> S2O;
+        for(int i = 0; i < bdd.output.size(); i++){
+            //cout<<bdd.output[i]<<endl;
+            O *= bdd.bddvars[bdd.output[i]];
+        }
+        O *= bdd.bddvars[bdd.nbits];
+        //dumpdot(O, "outcube");
+        W[cur].SolveEqn(O, S2O, outindex(), bdd.output.size()+1);
+        strategy(S2O);
         return true;
+    }
+
     return false;
 
+}
+
+void syn::strategy(vector<BDD>& S2O){
+    vector<BDD> winning;
+    for(int i = 0; i < S2O.size(); i++){
+        dumpdot(S2O[i], "S2O"+to_string(i));
+        for(int j = 0; j < bdd.output.size(); j++){
+            int index = bdd.output[j];
+            S2O[i] = S2O[i].Compose(bdd.bddvars[index], mgr.bddOne());
+        }
+        dumpdot(S2O[i], "AS2O"+to_string(i));
+    }
 }
 
 int** syn::outindex(){

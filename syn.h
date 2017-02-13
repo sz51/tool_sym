@@ -27,6 +27,7 @@ class syn
     BDD prime(BDD orign);
     BDD univsyn();
     BDD existsyn();
+    void strategy(vector<BDD>& S2O);
 };
 
 #endif // SYN_H
